@@ -1,0 +1,17 @@
+[package]
+name = "studytracker-core"
+description = "Logika murni StudyTracker: model, database, timer, statistik, ekspor."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+chrono.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+rusqlite = { version = "0.32", features = ["bundled", "chrono"] }
+rusqlite_migration = "1.3"
+
+[dev-dependencies]
+tempfile = "3"
