@@ -85,14 +85,14 @@ pub fn refresh(app: &AppHandle) {
             TimerPhase::Running => (
                 ICON_RUNNING,
                 format!(
-                    "Berjalan · {}",
+                    "Berjalan: {}",
                     snapshot.subject_name.unwrap_or_else(|| "belajar".into())
                 ),
             ),
             TimerPhase::Paused => (
                 ICON_PAUSED,
                 format!(
-                    "Jeda · {}",
+                    "Jeda: {}",
                     snapshot.subject_name.unwrap_or_else(|| "belajar".into())
                 ),
             ),

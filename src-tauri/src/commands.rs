@@ -488,7 +488,7 @@ pub fn open_mini_window(app: &AppHandle) -> CoreResult<()> {
         .mini_always_on_top;
     WebviewWindowBuilder::new(app, MINI_LABEL, WebviewUrl::App("index.html".into()))
         .title("StudyTracker")
-        .inner_size(300.0, 168.0)
+        .inner_size(300.0, 160.0)
         .min_inner_size(280.0, 140.0)
         .resizable(true)
         .always_on_top(always_on_top)
@@ -523,13 +523,15 @@ pub fn stop_from_tray(app: &AppHandle) -> CoreResult<()> {
     Ok(())
 }
 
+// Command jendela dibuat `async` supaya tidak berjalan di main thread: membuat
+// WebView2 baru dari main thread saat IPC sedang menunggu jawaban akan deadlock.
 #[tauri::command]
-pub fn open_mini(app: AppHandle) -> CoreResult<()> {
+pub async fn open_mini(app: AppHandle) -> CoreResult<()> {
     open_mini_window(&app)
 }
 
 #[tauri::command]
-pub fn close_mini(app: AppHandle) -> CoreResult<()> {
+pub async fn close_mini(app: AppHandle) -> CoreResult<()> {
     if let Some(window) = app.get_webview_window(MINI_LABEL) {
         window
             .close()
@@ -539,7 +541,7 @@ pub fn close_mini(app: AppHandle) -> CoreResult<()> {
 }
 
 #[tauri::command]
-pub fn set_mini_always_on_top(
+pub async fn set_mini_always_on_top(
     app: AppHandle,
     state: State<'_, AppState>,
     flag: bool,
@@ -554,7 +556,7 @@ pub fn set_mini_always_on_top(
 }
 
 #[tauri::command]
-pub fn focus_main(app: AppHandle) -> CoreResult<()> {
+pub async fn focus_main(app: AppHandle) -> CoreResult<()> {
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.unminimize();
         let _ = window.show();

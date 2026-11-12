@@ -9,6 +9,12 @@ default-run = "studytracker"
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
+[features]
+# Dipakai build produksi: aset frontend ditanam ke biner, bukan diambil dari devUrl.
+# `tauri dev` menjalankan cargo dengan --no-default-features, jadi devUrl tetap dipakai saat ngoding.
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
 [dependencies]
 studytracker-core = { path = "../crates/core" }
 tauri = { version = "2", features = ["tray-icon", "image-png"] }
@@ -22,7 +28,7 @@ chrono.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tracing.workspace = true
-tracing-subscriber = "0.3"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.59", features = [
