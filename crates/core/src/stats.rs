@@ -31,7 +31,9 @@ pub fn study_day(ts: i64, day_start_hour: u32) -> NaiveDate {
 }
 
 pub fn study_day_with_offset(ts: i64, day_start_hour: u32, offset_secs: i64) -> NaiveDate {
-    let shifted = ts - offset_secs - i64::from(day_start_hour) * 3600;
+    // `ts` adalah detik UTC; tambahkan offset supaya yang dihitung adalah jam dinding
+    // lokal, baru buang jam sebelum `day_start_hour` ke hari sebelumnya.
+    let shifted = ts + offset_secs - i64::from(day_start_hour) * 3600;
     Utc.timestamp_opt(shifted, 0)
         .single()
         .map(|dt| dt.date_naive())
@@ -220,7 +222,7 @@ mod tests {
         let ts = 1_760_000_000; // 2025-10-09 14:13 UTC, dipakai sebagai basis
         let offset = 7 * 3600;
         let day = study_day_with_offset(ts, 4, offset);
-        let clock = Utc.timestamp_opt(ts - offset, 0).single().unwrap();
+        let clock = Utc.timestamp_opt(ts + offset, 0).single().unwrap();
         let expected = if clock.hour() < 4 {
             clock.date_naive() - Duration::days(1)
         } else {

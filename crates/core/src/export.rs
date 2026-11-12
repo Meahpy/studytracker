@@ -181,11 +181,10 @@ fn sessions_to_csv(bundle: &Bundle) -> String {
 }
 
 fn fmt_iso(ts: i64) -> String {
-    chrono::Local
-        .format_timestamp(ts)
-        .map(|dt| dt.format("%Y-%m-%d %H:%M:%S").to_string())
-        .unwrap_or_default()
-        .to_string()
+    match chrono::Local.timestamp_opt(ts, 0).single() {
+        Some(dt) => dt.format("%Y-%m-%d %H:%M:%S").to_string(),
+        None => String::new(),
+    }
 }
 
 use chrono::TimeZone;

@@ -307,6 +307,12 @@ impl Store {
     }
 
     pub fn timer_snapshot(&self) -> Result<TimerSnapshot> {
+        self.timer_snapshot_at(stats::now_secs())
+    }
+
+    /// Snapshot pada waktu tertentu. Dipakai operasi timer supaya `elapsed_sec`
+    /// dihitung dari `now` yang dikirim, bukan dari jam nyata.
+    pub fn timer_snapshot_at(&self, now: i64) -> Result<TimerSnapshot> {
         let Some(session) = self.active_session()? else {
             return Ok(TimerSnapshot::idle());
         };
@@ -316,7 +322,7 @@ impl Store {
             session.started_at,
             session.paused_at,
             session.paused_total_sec,
-            stats::now_secs(),
+            now,
         );
         Ok(TimerSnapshot {
             phase,
@@ -346,7 +352,7 @@ impl Store {
              VALUES (?1, ?2, NULL, NULL, 0, NULL, NULL, 'timer')",
             params![subject_id, now],
         )?;
-        self.timer_snapshot()
+        self.timer_snapshot_at(now)
     }
 
     fn with_active<F>(&mut self, now: i64, action: F) -> Result<TimerSnapshot>
@@ -366,7 +372,7 @@ impl Store {
                 update.duration_sec
             ],
         )?;
-        self.timer_snapshot()
+        self.timer_snapshot_at(now)
     }
 
     pub fn pause_session(&mut self, now: i64) -> Result<TimerSnapshot> {
@@ -822,11 +828,27 @@ impl Store {
             *totals.entry(subject_id).or_insert(0) += secs;
         }
 
+        let mut counts: BTreeMap<i64, i64> = BTreeMap::new();
+        {
+            let mut stmt = self.conn.prepare(
+                "SELECT subject_id, COUNT(*) FROM sessions
+                 WHERE started_at < ?2 AND (ended_at IS NULL OR ended_at > ?1)
+                 GROUP BY subject_id",
+            )?;
+            let rows = stmt.query_map(params![from_ts, to_ts], |row| {
+                Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?))
+            })?;
+            for row in rows {
+                let (subject_id, count) = row?;
+                counts.insert(subject_id, count);
+            }
+        }
+
         let mut rows: Vec<SubjectTotal> = subjects
             .into_iter()
             .map(|s| SubjectTotal {
                 secs: totals.get(&s.id).copied().unwrap_or(0),
-                session_count: 0,
+                session_count: counts.get(&s.id).copied().unwrap_or(0),
                 subject_id: s.id,
                 subject_name: s.name,
                 color: s.color,

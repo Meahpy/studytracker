@@ -129,7 +129,7 @@ fn day_start_hour_moves_early_morning_sessions_to_yesterday() {
     let (yesterday_start, _) = stats::day_bounds(yesterday, hour);
 
     // 02.00 pagi ini menurut jam dinding = masih hari belajar kemarin.
-    let early = yesterday_start + 86_400 + 2 * 3_600;
+    let early = yesterday_start + 86_400 - 2 * 3_600;
     assert_eq!(stats::study_day(early, hour), yesterday);
 
     store
@@ -264,6 +264,7 @@ fn stats_range_sums_against_the_previous_period() {
         .unwrap();
     assert_eq!(breakdown.len(), 1);
     assert_eq!(breakdown[0].secs, 7_200);
+    assert_eq!(breakdown[0].session_count, 2);
 }
 
 #[test]
@@ -319,7 +320,7 @@ fn export_and_import_round_trip_json() {
     let exported = export::export(source.conn(), &path, ExportFormat::Json).unwrap();
     assert_eq!(exported, 1);
 
-    let mut target = store();
+    let target = store();
     let report = export::import(target.conn(), &path).unwrap();
     assert_eq!(report.subjects_added, 1);
     assert_eq!(report.sessions_added, 1);
@@ -353,7 +354,7 @@ fn export_and_import_round_trip_csv() {
     assert!(text.starts_with("id,mata_pelajaran"));
     assert!(text.contains("\"Ulangan, bab 3\""));
 
-    let mut target = store();
+    let target = store();
     let report = export::import(target.conn(), &path).unwrap();
     assert_eq!(report.sessions_added, 1);
 
