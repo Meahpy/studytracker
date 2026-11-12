@@ -1,0 +1,85 @@
+/*
+ * Token StudyTracker. Sumber: UI_UX_SPEC.md bagian 3.
+ * Jangan menambah hex baru, gradient, blur, atau bayangan di luar file ini.
+ */
+
+:root {
+  /* Pink dan netral berwarna pink */
+  --blush: #fff1f5;
+  --petal: #ffe3ec;
+  --petal-strong: #ffd0df;
+  --line: #f4b6cb;
+  --rose: #ff9dbb;
+  --raspberry: #d92d6a;
+  --raspberry-press: #b81f55;
+  --plum: #4b1b33;
+  --mauve: #7a5b69;
+  --paper: #ffffff;
+
+  /* Status */
+  --ok: #17694b;
+  --warn: #8a5a00;
+  --danger: #b42318;
+  --paused: #f6c945;
+
+  /* Warna mata pelajaran */
+  --s-rose: #ff9dbb;
+  --s-butter: #f6c945;
+  --s-tangerine: #ff9a62;
+  --s-lime: #b5d95a;
+  --s-mint: #5fd0a5;
+  --s-aqua: #5ccbd6;
+  --s-sky: #6fb7f0;
+  --s-lavender: #a68df2;
+
+  /* Heatmap */
+  --heat-0: #ffdde8;
+  --heat-1: #ffb8cf;
+  --heat-2: #ff8ab0;
+  --heat-3: #f0568a;
+  --heat-4: #d92d6a;
+
+  /*
+   * Teks di atas sel heatmap. Dipatok (tidak ikut berubah saat tema gelap)
+   * karena warna heatmap tetap pink di kedua tema, jadi teksnya harus tetap gelap.
+   */
+  --on-heat: #4b1b33;
+  --on-heat-strong: #ffffff;
+
+  /* Radius: hierarki, bukan satu nilai untuk semua */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* Tipografi */
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Figtree', system-ui, sans-serif;
+
+  /* Spasi, basis 4px */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+
+  /* Gerak: hanya sebagai respons aksi */
+  --dur-color: 150ms;
+  --dur-dialog: 120ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+[data-theme='dark'] {
+  --blush: #2a1220;
+  --petal: #3b1a2d;
+  --petal-strong: #4d2339;
+  --line: #6b3550;
+  --plum: #ffe9f0;
+  --mauve: #d9afc2;
+  --raspberry: #ff6fa3;
+  --raspberry-press: #ff8ab5;
+  --paper: #4d2339;
+}
