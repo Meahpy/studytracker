@@ -1,0 +1,16 @@
+{
+  "name": "studytracker",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Pelacak waktu belajar pribadi",
+  "scripts": {
+    "dev": "npm --prefix ui run dev",
+    "build": "npm --prefix ui run build",
+    "check": "npm --prefix ui run check",
+    "test": "npm --prefix ui run test",
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.0"
+  }
+}
