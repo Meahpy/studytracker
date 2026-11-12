@@ -13,6 +13,7 @@
 
   const duration = $derived(fmtClock(session.effectiveDurationSec));
   const live = $derived(!session.endedAt);
+  const paused = $derived(!session.endedAt && session.pausedAt !== null);
 </script>
 
 <button type="button" class="row" onclick={() => onedit?.(session)} disabled={!onedit}>
@@ -33,7 +34,7 @@
   <span class="duration tabular">
     {duration}
     {#if live}
-      <span class="live">{m.timer.running}</span>
+      <span class="live">{paused ? m.timer.paused : m.timer.running}</span>
     {/if}
   </span>
 </button>

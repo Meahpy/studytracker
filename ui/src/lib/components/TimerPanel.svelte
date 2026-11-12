@@ -96,11 +96,12 @@
 
   .panel.running {
     background: var(--raspberry);
-    color: var(--paper);
+    color: var(--on-raspberry);
   }
 
   .panel.paused {
     background: var(--paused);
+    color: var(--on-paused);
   }
 
   .head {
@@ -152,7 +153,7 @@
     padding: 0 var(--sp-8);
     border-radius: var(--r-pill);
     background: var(--raspberry);
-    color: var(--paper);
+    color: var(--on-raspberry);
     font-size: 16px;
     font-weight: 600;
     transition: background-color var(--dur-color) var(--ease);
@@ -198,13 +199,13 @@
   }
 
   .panel.paused .ghost.resume {
-    background: var(--plum);
-    border-color: var(--plum);
+    background: var(--on-paused);
+    border-color: var(--on-paused);
     color: var(--paused);
   }
 
   .panel.paused .ghost.resume:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--plum) 88%, black);
+    background: color-mix(in srgb, var(--on-paused) 88%, black);
   }
 
   @container (max-width: 420px) {

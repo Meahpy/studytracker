@@ -245,7 +245,14 @@ class AppStore {
 
   async finishOrphan(endedAt: number) {
     await this.guard(async () => {
-      await api.finishOrphanSession(endedAt);
+      try {
+        await api.finishOrphanSession(endedAt);
+      } catch (error) {
+        // Sesi bisa sudah ditutup dari tray atau pintasan global sebelum dialog
+        // dijawab. Kalau timer sudah diam, dialog tidak perlu bertahan.
+        await this.refreshAll();
+        if (this.timer.phase !== 'idle') throw error;
+      }
       this.dialog = null;
       await this.refreshAll();
     });
@@ -253,7 +260,12 @@ class AppStore {
 
   async discardOrphan(sessionId: number) {
     await this.guard(async () => {
-      await api.discardSession(sessionId);
+      try {
+        await api.discardSession(sessionId);
+      } catch (error) {
+        await this.refreshAll();
+        if (this.timer.phase !== 'idle') throw error;
+      }
       this.dialog = null;
       await this.refreshAll();
     });

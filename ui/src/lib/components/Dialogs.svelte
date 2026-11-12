@@ -213,7 +213,11 @@
   $effect(() => {
     const dialog = store.dialog;
     if (dialog?.kind !== 'orphan') return;
-    orphanTime = timeValue(Math.floor(Date.now() / 1000));
+    // Bulatkan ke atas: input jam hanya sampai menit, jadi sesi yang baru mulai
+    // beberapa detik lalu bisa mendapat jam selesai yang lebih awal dari mulai.
+    const start = Math.floor(dialog.startedAt);
+    const now = Math.floor(Date.now() / 1000);
+    orphanTime = timeValue(Math.max(now, start + 60));
     orphanError = '';
   });
 

@@ -22,6 +22,13 @@
   --danger: #b42318;
   --paused: #f6c945;
 
+  /*
+   * Teks di atas aksen. Raspberry berubah terang di tema gelap, jadi warnanya
+   * ikut berganti; kuning jeda selalu terang sehingga teksnya selalu gelap.
+   */
+  --on-raspberry: #ffffff;
+  --on-paused: #4b1b33;
+
   /* Warna mata pelajaran */
   --s-rose: #ff9dbb;
   --s-butter: #f6c945;
@@ -82,4 +89,5 @@
   --raspberry: #ff6fa3;
   --raspberry-press: #ff8ab5;
   --paper: #4d2339;
+  --on-raspberry: #2a1220;
 }

@@ -53,6 +53,6 @@
 
   .segment.active {
     background: var(--raspberry);
-    color: var(--paper);
+    color: var(--on-raspberry);
   }
 </style>

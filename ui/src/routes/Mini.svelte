@@ -60,11 +60,12 @@
 
   .mini.running {
     background: var(--raspberry);
-    color: var(--paper);
+    color: var(--on-raspberry);
   }
 
   .mini.paused {
     background: var(--paused);
+    color: var(--on-paused);
   }
 
   header {
@@ -122,7 +123,7 @@
     height: 38px;
     border-radius: var(--r-pill);
     background: var(--raspberry);
-    color: var(--paper);
+    color: var(--on-raspberry);
     font-size: 14px;
     font-weight: 600;
   }
@@ -133,7 +134,7 @@
   }
 
   .mini.paused .action {
-    background: var(--plum);
+    background: var(--on-paused);
     color: var(--paused);
   }
 

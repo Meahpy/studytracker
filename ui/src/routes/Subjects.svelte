@@ -176,7 +176,7 @@
     padding: 0 var(--sp-4);
     border-radius: var(--r-pill);
     background: var(--raspberry);
-    color: var(--paper);
+    color: var(--on-raspberry);
     font-size: 14px;
     font-weight: 600;
   }
