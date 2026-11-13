@@ -146,7 +146,7 @@ cargo test -p studytracker-core   # 44 tes logika core
 cargo check --workspace --all-targets
 ```
 
-CI menjalankan semua perintah di atas pada setiap push ke `main` dan setiap pull request.
+CI menjalankan pemeriksaan frontend dan tes core pada setiap push ke `main` dan setiap pull request.
 
 ### Merilis versi baru
 
