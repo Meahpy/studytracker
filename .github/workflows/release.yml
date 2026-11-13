@@ -1,0 +1,88 @@
+name: Rilis
+
+# Menerbitkan GitHub Release berisi tiga pilihan pemasangan setiap kali tag
+# versi di-push: installer NSIS, MSI, dan paket portable ZIP.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Windows x64
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Pasang dependensi
+        run: |
+          npm ci
+          npm --prefix ui ci
+
+      - name: Bangun dan terbitkan rilis
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "StudyTracker ${{ github.ref_name }}"
+          releaseBody: |
+            Pelacak waktu belajar pribadi untuk desktop. Semua data tinggal di komputer kamu.
+
+            **Pilih satu berkas:**
+
+            | Berkas | Keterangan |
+            | --- | --- |
+            | `*_x64-setup.exe` | Installer NSIS. Cara paling mudah: pintasan Start Menu dan entri *Uninstall*. |
+            | `*_x64_en-US.msi` | MSI untuk pemasangan terkelola lewat `msiexec` atau alat penyebaran. |
+            | `*_x64_portable.zip` | Ekstrak, lalu jalankan `studytracker.exe`. Tanpa instalasi. |
+
+            Belum ditandatangani dengan sertifikat code signing, jadi Windows SmartScreen bisa
+            menampilkan peringatan saat pertama dijalankan: *More info → Run anyway*.
+
+            Periksa unduhan dengan `SHA256SUMS.txt` di lampiran rilis.
+          releaseDraft: false
+          prerelease: false
+          args: --bundles nsis,msi
+
+      - name: Buat paket portable ZIP dan checksum
+        shell: pwsh
+        run: |
+          $version = (Get-Content src-tauri/tauri.conf.json -Raw | ConvertFrom-Json).version
+          $zipName = "StudyTracker_${version}_x64_portable.zip"
+          Compress-Archive -Path target/release/studytracker.exe -DestinationPath $zipName -Force
+
+          $files = @(
+            "target/release/bundle/nsis/StudyTracker_${version}_x64-setup.exe",
+            "target/release/bundle/msi/StudyTracker_${version}_x64_en-US.msi",
+            $zipName
+          )
+
+          $lines = foreach ($file in $files) {
+            if (-not (Test-Path $file)) { throw "Berkas tidak ditemukan: $file" }
+            $hash = (Get-FileHash $file -Algorithm SHA256).Hash.ToLower()
+            "$hash  $(Split-Path $file -Leaf)"
+          }
+          $lines | Set-Content -Path "SHA256SUMS.txt" -Encoding ascii
+
+          "ZIP_NAME=$zipName" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Lampirkan portable ZIP dan checksum ke rilis
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.ref_name }}" "$env:ZIP_NAME" "SHA256SUMS.txt" --clobber
