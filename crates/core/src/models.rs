@@ -3,7 +3,7 @@
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 
-/// Warna mata pelajaran. Delapan pilihan, sama dengan `UI_UX_SPEC.md` bagian 3.1.
+/// Warna mata pelajaran. Delapan pilihan pastel, teks di atasnya selalu gelap.
 pub const SUBJECT_COLORS: [&str; 8] = [
     "rose", "butter", "tangerine", "lime", "mint", "aqua", "sky", "lavender",
 ];
